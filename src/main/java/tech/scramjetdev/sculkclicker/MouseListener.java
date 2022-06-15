@@ -12,12 +12,12 @@ public class MouseListener implements NativeMouseInputListener {
     }
 
     public void nativeMouseClicked(NativeMouseEvent event) {
-        if (event.getButton() == NativeMouseEvent.BUTTON1) {
-            sculkClicker.getLeftClicks().add(System.currentTimeMillis());
-        } else if (event.getButton() == NativeMouseEvent.BUTTON2) {
-            sculkClicker.getRightClicks().add(System.currentTimeMillis());
+        if (event.getButton() == NativeMouseEvent.BUTTON1) { // left
+            sculkClicker.incrementLeftClick();
+        } else if (event.getButton() == NativeMouseEvent.BUTTON2) { // right
+            sculkClicker.incrementRightClick();
         }
-        System.out.println("R CPS: " + sculkClicker.getRightClicks().size());
-        System.out.println("L CPS: " + sculkClicker.getLeftClicks().size());
+        System.out.println("R CPS: " + sculkClicker.getRightCps());
+        System.out.println("L CPS: " + sculkClicker.getLeftCps());
     }
 }

@@ -6,12 +6,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Timer;
 
 public class SculkClicker {
     private static final Logger LOGGER = LogManager.getLogger(SculkClicker.class);
 
-    private ArrayList<Long> rightClicks = new ArrayList<>();
-    private ArrayList<Long> leftClicks = new ArrayList<>();
+    private int rightClicks = 0;
+    private int leftClicks = 0;
+    private long measureStartTime = 0;
+    private long resetTime = 3000;
 
     public SculkClicker() {
         LOGGER.info("Initializing SculkClicker...");
@@ -25,23 +28,36 @@ public class SculkClicker {
         }
 
         GlobalScreen.addNativeMouseListener(new MouseListener(this));
-        Thread clock = new Thread(new CpsRunnable(this), "Clock Thread");
-        clock.start();
+        Timer timer = new Timer("timer thread");
+        timer.scheduleAtFixedRate(new CpsRunnable(this), 0, 200);
     }
 
-    public ArrayList<Long> getRightClicks() {
-        return rightClicks;
+    public void incrementRightClick() {
+        rightClicks++;
+        resetTime = System.currentTimeMillis() + 3000;
     }
 
-    public ArrayList<Long> getLeftClicks() {
-        return leftClicks;
+    public void incrementLeftClick() {
+        leftClicks++;
+        resetTime = System.currentTimeMillis() + 3000;
     }
 
-    public void setRightClicks(ArrayList<Long> rightClicks) {
-        this.rightClicks = rightClicks;
+    public void resetClicks() {
+        rightClicks = 0;
+        leftClicks = 0;
+        measureStartTime = System.currentTimeMillis();
+        resetTime = measureStartTime + 3000;
     }
 
-    public void setLeftClicks(ArrayList<Long> leftClicks) {
-        this.leftClicks = leftClicks;
+    public long getResetTime() {
+        return resetTime;
+    }
+
+    public float getLeftCps() {
+        return (float) leftClicks / (System.currentTimeMillis() - measureStartTime) * 1000;
+    }
+
+    public float getRightCps() {
+        return (float) rightClicks / (System.currentTimeMillis() - measureStartTime) * 1000;
     }
 }
