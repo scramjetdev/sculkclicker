@@ -8,24 +8,26 @@ import java.util.ArrayList;
 public class SculkClicker {
     private ArrayList<Long> rightClicks = new ArrayList<>();
     private ArrayList<Long> leftClicks = new ArrayList<>();
-    Thread clock;
+
     public SculkClicker() {
+        System.out.println("Initializing SculkClicker...");
+
         try {
             GlobalScreen.registerNativeHook();
-        } catch (NativeHookException e) {
-            System.err.println("There was a problem registering the native hook.");
-            System.err.println(e.getMessage());
+        } catch (NativeHookException exception) {
+            System.err.println("A problem happened whilst registering native hooks.");
+            exception.printStackTrace();
             System.exit(1);
         }
+
         GlobalScreen.addNativeMouseListener(new MouseListener(this));
-        clock = new Thread(new CpsRunnable(this));
+        Thread clock = new Thread(new CpsRunnable(this), "Clock Thread");
         clock.start();
     }
 
     public ArrayList<Long> getRightClicks() {
         return rightClicks;
     }
-
 
     public ArrayList<Long> getLeftClicks() {
         return leftClicks;
